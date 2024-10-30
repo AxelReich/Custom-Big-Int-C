@@ -3,7 +3,9 @@
 
 using namespace std; 
 
-int main() {
+int main() 
+{
+    MyInt m;
     
     return 0;
 }

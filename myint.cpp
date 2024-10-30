@@ -1,9 +1,9 @@
-#include <iostream>
 #include "myint.h"
+#include <iostream>
 
 using namespace std;
 
-//What should I do with these two functions? Call them for the Conversor constructor?
+//What should I do with these two functions? Call them for the Conversor constructor????
 
 int C2I(char c)
 // converts character into integer (returns -1 for error)
@@ -103,7 +103,7 @@ istream& operator >> (istream& is, const MyInt& x)      // Ignore leading spaces
 
 //Constructors 
 
-MyInt::MyInt(int n = 0)		    // If negative parameter, set to 0. Else, set value to the parameter 
+MyInt::MyInt(int n)		    // If negative parameter, set to 0. Else, set value to the parameter 
 {
 
 }
@@ -150,6 +150,7 @@ int MyInt::Grow()
 {
 
 }
+
 
 // Other operator overloads  ++int; int++
 // Pre, returns the value incremented 

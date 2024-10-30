@@ -1,5 +1,7 @@
 #include <iostream>
 
+using namespace std; 
+
 class MyInt
 {
    // these overload starters are declared as friend functions
@@ -36,7 +38,7 @@ public:
 
     // Copy constructor and assignment operator for deep copy
     MyInt(const MyInt& i);
-    MyInt operator=(const MyInt& i);
+    MyInt& operator=(const MyInt& i);
 
     // getters
     int GetSize()  const;
