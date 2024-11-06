@@ -155,13 +155,14 @@ MyInt::MyInt(const char* i)       // C-string that is a combination of chars wit
 }
 MyInt::~MyInt()                   // When myInt is deallocated, should deallocate any data 
 {
-
+    delete[] arrInt;
+    arrInt = nullptr;             // Is this ok????
 }
 
 // Copy constructor and assignment operator for deep copy
 MyInt::MyInt(const MyInt& i)
 {
-
+    
 }
 MyInt& MyInt::operator=(const MyInt& i)
 {
