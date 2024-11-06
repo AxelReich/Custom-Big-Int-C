@@ -1,11 +1,15 @@
-int : myint.o main.o 
+# Final executable target
+int: myint.o main.o 
 	g++ myint.o main.o -o a 
 
-int.o : myint.o myint.h
-	g++ -c myint.cpp
+# Rule to compile myint.cpp into myint.o
+myint.o: myint.cpp myint.h
+	g++ -c myint.cpp -o myint.o
 
-main.o : main.o myint.h
-	g++ -c main.cpp 
+# Rule to compile main.cpp into main.o
+main.o: main.cpp myint.h
+	g++ -c main.cpp -o main.o 
 
-clear :
-	rm -f  *.o myint
+# Clean up rule to remove object files and the executable
+clear:
+	rm -f *.o a

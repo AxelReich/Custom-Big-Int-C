@@ -59,7 +59,7 @@ public:
 
 private:
     int size;
-    int *integer[];               // integer = [1,2,3,4,5]      When printed should be: 12345
+    int *arrInt;               // integer = [1,2,3,4,5]      When printed should be: 12345
 
     void Resize(int NewSize);     // I should never put it more than 5 spots more than there are 
                                     // Normally use it when the istream is called and the user has to type the int.  

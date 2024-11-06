@@ -5,7 +5,8 @@ using namespace std;
 
 int main() 
 {
-    MyInt m;
+    MyInt m(12534089740928);
+    cout << m;
     
     return 0;
 }

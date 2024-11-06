@@ -91,7 +91,10 @@ bool operator!= (const MyInt& x, const MyInt& y)
 // declare overloads for input and output 
 ostream& operator << (ostream& os, const MyInt& x)      // Print the number in regular formatting 
 {
-    //TODO
+    for(int i = 0; i < x.size; i++){
+        os << x.arrInt[i];
+    }
+    os << endl;
     return os;
 }
 istream& operator >> (istream& is, const MyInt& x)      // Ignore leading spaces, until there is a num. 
@@ -103,9 +106,48 @@ istream& operator >> (istream& is, const MyInt& x)      // Ignore leading spaces
 
 //Constructors 
 
-MyInt::MyInt(int n)		    // If negative parameter, set to 0. Else, set value to the parameter 
+MyInt::MyInt(int n)		    // If negative parameter, set to 0. Else, set value to the parameter // Because it is an INT then it would not accept any large value. 
 {
+    // If n is negative, set it to 0
+    if (n < 0) {
+        n = 0;
+    }
 
+    
+    // Use temp to not compare the value 
+    int temp = n;
+    size = 0;
+    if (temp == 0) { 
+        size = 1;  // So the loop only runs once 
+    }
+    while (temp > 0) {
+        size++;  
+        temp /= 10;  // So it does not change the value of n we use the temp
+    }
+
+    // Allocate memory for the array to store the digits
+    arrInt = new int[size];
+
+
+    // Fill the array with digits in reverse order
+    int index = 0;
+    while (n > 0) {
+        arrInt[index++] = n % 10;  // Store the last digit
+        n /= 10;  // Remove the last digit from n
+    }
+
+    // Reverse the array 
+    for (int i = 0; i < size / 2; i++) {
+        // Swap elements at index i and size - 1 - i
+        int temp = arrInt[i];
+        arrInt[i] = arrInt[size - 1 - i];
+        arrInt[size - 1 - i] = temp;
+    }
+
+    // Handle the case for n == 0, where the array needs to hold 0
+    if (size == 1) {
+        arrInt[0] = 0;
+    }
 }
 MyInt::MyInt(const char* i)       // C-string that is a combination of chars with a '\n' at the end. If Empty, or have chars, or does not have any nums. Int = 0                                                                           
 {
@@ -165,4 +207,4 @@ MyInt MyInt::operator++(int x)
 }
 
 
-// Are all the functions and the data are okay? Check this again.
+// Are all the functions and the data are okay? Check this again.7
