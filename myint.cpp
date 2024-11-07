@@ -3,7 +3,6 @@
 
 using namespace std;
 
-//What should I do with these two functions? Call them for the Conversor constructor????
 
 int C2I(char c)
 // converts character into integer (returns -1 for error)
@@ -12,22 +11,13 @@ int C2I(char c)
    return (c - '0');				    // success
 }
 
-char I2C(int x)
-// converts single digit integer into character (returns '\0' for error)
-{
-   if (x < 0 || x > 9)		return '\0';	// error
-   return (static_cast<char>(x) + '0'); 	// success
-}
 
 
-// Add in operator overload and member function definitions 
-
-
-// these overload starters are declared as friend functions
+// These overloads were declared as friends functions 
 
 MyInt operator+ (const MyInt& x, const MyInt& y)
 {
-    //TODO 
+    
     return x;
 }
 MyInt operator* (const MyInt& x, const MyInt& y)
@@ -88,7 +78,7 @@ bool operator!= (const MyInt& x, const MyInt& y)
     return false;
 }
 
-// declare overloads for input and output 
+// operator overloads for input and output 
 ostream& operator << (ostream& os, const MyInt& x)      // Print the number in regular formatting 
 {
     for(int i = 0; i < x.size; i++){
@@ -99,20 +89,122 @@ ostream& operator << (ostream& os, const MyInt& x)      // Print the number in r
 }
 istream& operator >> (istream& is, const MyInt& x)      // Ignore leading spaces, until there is a num. 
 {
-    //TODO
+    // Skip the leading spaces
+    while (isspace(is.peek())){
+        is.get();
+    }
+
+    //Check next if it a digit 
+
+    int capacity = 5;
+    char* intArr = new char[capacity];
+    int i = 0;
+
+    char ch;
+
+    while (isdigit(ch) && is.get(ch)){
+        if (i >= capacity){
+            capacity += 5;
+            char* newintArr = new char[capacity];
+            for (int i = 0; i < capacity; i++){
+                newintArr[i] = intArr[i]; 
+            }
+            delete[] intArr;
+            intArr = newintArr;
+        }
+    }
+
+    // TODO 
+
     return is;
 }
 
 
 //Constructors 
-
 MyInt::MyInt(int n)		    // If negative parameter, set to 0. Else, set value to the parameter // Because it is an INT then it would not accept any large value. 
 {
-    // If n is negative, set it to 0
-    if (n < 0) {
-        n = 0;
+    // Set Size depending on the lenght of the parameter
+    SetSize(n); 
+    SetArray(n);
+}
+MyInt::MyInt(const char* c)       // C-string that is a combination of chars with a '\n' at the end. If Empty, or have chars, or does not have any nums. Int = 0                                                                           
+{
+    // Invalid parameter 
+    if (c == nullptr || c == '\0' || c[0] == '-'){
+        size = 1;
+        arrInt = new int[size];
+        arrInt[0] = 0;
+        return;
     }
 
+    // Allocate the memory 
+    size = 0;
+    for (int i = 0; c[i] != '\0'; i++){
+        if (c[i] < '0' || c[i] > '9'){
+            size = 1;
+            arrInt = new int[size];
+            arrInt[0] = 0;
+            return;
+        }
+        size++;
+    }
+
+    // Create the array
+    arrInt = new int[size];
+
+    // Put values inside the array
+    for (int i = 0; i < size; i++){
+        arrInt[i] = C2I(c[i]);
+    }
+}
+//Destructor
+MyInt::~MyInt()                   // When myInt is deallocated, should deallocate any data 
+{
+    delete[] arrInt;
+    arrInt = nullptr;             
+}
+// Copy constructor and assignment operator for deep copy
+MyInt::MyInt(const MyInt& x) : size(x.size)         // Should use this when  
+{
+    arrInt = new int[size];
+    for (int i = 0; i < size; i++){
+        arrInt[i] = x.arrInt[i];
+    }
+
+}
+MyInt& MyInt::operator=(const MyInt& x)             // Should use this when 
+{
+    // Check for self assignment 
+    if (this == &x){
+        return *this;
+    }
+
+    delete[] arrInt;
+
+    // Allocate new memory
+    size = x.size;
+    arrInt = new int[size];
+    
+    for (int i = 0; i < size; i++){
+        arrInt[i] = x.arrInt[i];
+    }
+
+    return *this;
+}
+
+// getters
+int MyInt::GetSize()  const
+{
+    return size;
+}
+
+
+// setters 
+void MyInt::SetSize(int n)
+{
+    if (n < 0) {
+    n = 0;
+    }
     
     // Use temp to not compare the value 
     int temp = n;
@@ -124,8 +216,12 @@ MyInt::MyInt(int n)		    // If negative parameter, set to 0. Else, set value to 
         size++;  
         temp /= 10;  // So it does not change the value of n we use the temp
     }
+    SetArray(n);
 
-    // Allocate memory for the array to store the digits
+}
+void MyInt::SetArray(int n)
+{
+        // Allocate space in memory for arr int and fills them with the numbers   
     arrInt = new int[size];
 
 
@@ -149,50 +245,6 @@ MyInt::MyInt(int n)		    // If negative parameter, set to 0. Else, set value to 
         arrInt[0] = 0;
     }
 }
-MyInt::MyInt(const char* i)       // C-string that is a combination of chars with a '\n' at the end. If Empty, or have chars, or does not have any nums. Int = 0                                                                           
-{
-
-}
-MyInt::~MyInt()                   // When myInt is deallocated, should deallocate any data 
-{
-    delete[] arrInt;
-    arrInt = nullptr;             // Is this ok????
-}
-
-// Copy constructor and assignment operator for deep copy
-MyInt::MyInt(const MyInt& i)
-{
-    
-}
-MyInt& MyInt::operator=(const MyInt& i)
-{
-
-}
-
-// getters
-int MyInt::GetSize()  const
-{
-
-}
-int MyInt::GetArray() const
-{
-
-}
-
-// setters 
-int MyInt::SetSize()
-{
-
-}
-//I Thint that SetArray is not necessary ????
-int MyInt::SetArray()
-{
-
-}
-int MyInt::Grow()
-{
-
-}
 
 
 // Other operator overloads  ++int; int++
@@ -208,4 +260,6 @@ MyInt MyInt::operator++(int x)
 }
 
 
-// Are all the functions and the data are okay? Check this again.7
+
+// I dont understand, isnt supposed to be that there could be an infinite amount of numbers
+// Where should this happen if in the constructor you can only put 2 billion, where should this be able to happen????

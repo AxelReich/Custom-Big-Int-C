@@ -32,24 +32,24 @@ public:
     //Constructors 
 
     MyInt(int n = 0);		    // If negative parameter, set to 0. Else, set value to the parameter 
-    MyInt(const char* i);       // C-string that is a combination of chars with a '\n' at the end. If Empty, or have chars, or does not have any nums 
+    MyInt(const char* c);       // C-string that is a combination of chars with a '\n' at the end. If Empty, or have chars, or does not have any nums 
                                                                                                 // integer = 0
     ~MyInt();                   // When myInt is deallocated, should deallocate any data 
 
     // Copy constructor and assignment operator for deep copy
-    MyInt(const MyInt& i);
-    MyInt& operator=(const MyInt& i);
+    MyInt(const MyInt& x);
+    MyInt& operator=(const MyInt& x);
+
+    void checkInvalidParameter();
 
     // getters
     int GetSize()  const;
     int GetArray() const;
 
     // setters 
-    int SetSize();
-
-    //I Thint that SetArray is not necessary ????
-    int SetArray();
-    int Grow();
+    void SetSize(int n);
+    void SetArray(int n);
+    void Grow();
 
     // Other operator overloads  ++int; int++
         // Pre, returns the value incremented 
