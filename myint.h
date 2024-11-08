@@ -25,7 +25,7 @@ class MyInt
 
     // declare overloads for input and output 
     friend ostream& operator << (ostream& os, const MyInt& x);      // Print the number in regular formatting 
-    friend istream& operator >> (istream& is, const MyInt& x);      // Ignore leading spaces, until there is a num. 
+    friend istream& operator >> (istream& is,  MyInt& x);      // Ignore leading spaces, until there is a num. 
 
 
 public:
@@ -49,7 +49,6 @@ public:
     // setters 
     void SetSize(int n);
     void SetArray(int n);
-    void Grow();
 
     // Other operator overloads  ++int; int++
         // Pre, returns the value incremented 
@@ -61,9 +60,8 @@ private:
     int size;
     int *arrInt;               // integer = [1,2,3,4,5]      When printed should be: 12345
 
-    void Resize(int NewSize);     // I should never put it more than 5 spots more than there are 
-                                    // Normally use it when the istream is called and the user has to type the int.  
+   void Resize(int NewSize);     // I should never put it more than 5 spots more than there are 
+                                 // Normally use it when the istream is called and the user has to type the int.  
 
 };
 
-// Is all this data enough????

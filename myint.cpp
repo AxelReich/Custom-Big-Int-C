@@ -14,17 +14,97 @@ int C2I(char c)
 
 
 // These overloads were declared as friends functions 
-
-MyInt operator+ (const MyInt& x, const MyInt& y)
+MyInt operator+(const MyInt& x, const MyInt& y)
 {
-    
-    return x;
+    // Find the maximum size of the two MyInt objects
+    int maxSize = max(x.size, y.size);
+    bool carry = false;  // Store carry (either 0 or 1)
+
+    // Create a result MyInt with an extra space for possible carry
+    MyInt result;
+    result.arrInt = new int[maxSize + 1]; 
+    result.size = maxSize + 1;  
+
+    int i;
+    for (i = 0; i < maxSize; ++i) {
+        int sum = carry;  // Start with the carry from the previous iteration
+
+        // Add digits from x and y if within bounds
+        if (i < x.size) sum += x.arrInt[x.size - i - 1];
+        if (i < y.size) sum += y.arrInt[y.size - i - 1];
+
+        result.arrInt[result.size - i - 1] = sum % 10;  // Store last digit of sum
+        carry = sum / 10;  // Update carry
+    }
+
+    // Handle the final carry, if present
+    if (carry) {
+        result.arrInt[0] = carry;
+    } else {
+        // If there's no carry, adjust the result size to ignore extra space
+        for (int j = 1; j < result.size; ++j) {
+            result.arrInt[j - 1] = result.arrInt[j];
+        }
+        result.size--;
+    }
+
+    // Remove any leading zeros
+    while (result.size > 1 && result.arrInt[0] == 0) {
+        for (int k = 1; k < result.size; ++k) {
+            result.arrInt[k - 1] = result.arrInt[k];
+        }
+        result.size--;
+    }
+
+    return result;
 }
+
 MyInt operator* (const MyInt& x, const MyInt& y)
 {
-    //TODO 
-    return x;
+    // Max size of array x + y
+    int maxSize = x.size + y.size;
+
+    MyInt result;
+    result.arrInt = new int[maxSize];
+
+    // Initialize the array to 0
+    for (int i = 0; i < maxSize; i++){
+        result.arrInt[i] = 0;
+    }
+
+    // Perform multiplication using long multiplication
+    for (int i = 0; i < x.size; ++i) {
+        int carry = 0;
+        for (int j = 0; j < y.size; ++j) {
+            int product = x.arrInt[x.size - i - 1] * y.arrInt[y.size - j - 1] + result.arrInt[maxSize - i - j - 1] + carry;
+            result.arrInt[maxSize - i - j - 1] = product % 10;  // Store the single digit
+            carry = product / 10;  // Update carry for next iteration
+        }
+        // If there's a remaining carry, add it to the next position in the result
+        result.arrInt[maxSize - i - y.size - 1] += carry;
+    }
+
+    // Remove leading zeros (if any) from the result
+    int newSize = maxSize;
+    while (newSize > 1 && result.arrInt[maxSize - newSize] == 0) {
+        --newSize;
+    }
+    result.size = newSize;
+
+    // Adjust result array if there were leading zeros
+    if (newSize < maxSize) {
+        int* trimmedArr = new int[newSize];
+        for (int i = 0; i < newSize; ++i) {
+            trimmedArr[i] = result.arrInt[maxSize - newSize + i];
+        }
+        delete[] result.arrInt;
+        result.arrInt = trimmedArr;
+    }
+
+    return result;
 }
+
+
 //Optional
 MyInt operator- (const MyInt& x, const MyInt& y) // If result negative, do not return anything  
 {
@@ -45,76 +125,97 @@ MyInt operator/ (const MyInt& x, const MyInt& y)
 }
 
 // Operator overloads for comparison 
-bool operator<  (const MyInt& x, const MyInt& y)
+bool operator<(const MyInt& x, const MyInt& y)
 {
-    //TODO:
+    if (x.size < y.size) {
+        return true;
+    }
+    // If x has more digits than y, x is larger
+    if (x.size > y.size) {
+        return false;
+    }
+    // If sizes are equal, compare digit by digit (from most significant)
+    for (int i = 0; i < x.size; ++i) {
+        if (x.arrInt[i] < y.arrInt[i]) {
+            return true;
+        }
+        if (x.arrInt[i] > y.arrInt[i]) {
+            return false;
+        }
+    }
+    // If they are equal
     return false;
-
 }
 bool operator>  (const MyInt& x, const MyInt& y)
 {
-    //TODO:
-    return false;
-
+    return y < x;
 }
 bool operator<= (const MyInt& x, const MyInt& y)
 {
-    //TODO:
-    return false;
+    return !(y<x);
 }
 bool operator>= (const MyInt& x, const MyInt& y)
 {
-    //TODO:
-    return false;
+    return !(x<y);
 }
 bool operator== (const MyInt& x, const MyInt& y)
 {
-    //TODO
-    return false;
+
+    // If x has more digits than y, x is larger
+    if (x.size != y.size) {
+        return false;
+    }
+    // If sizes are equal, compare digit by digit (from most significant)
+    for (int i = 0; i < x.size; ++i) {
+        if (x.arrInt[i] == y.arrInt[i]) {
+            return true;
+        }
+        if (x.arrInt[i] == y.arrInt[i]) {
+            return true;
+        }
+    }
+    // If they are equal
+    return true;
 }
 bool operator!= (const MyInt& x, const MyInt& y)
 {
-    //TODO
-    return false;
+    return !(x == y);
 }
 
 // operator overloads for input and output 
 ostream& operator << (ostream& os, const MyInt& x)      // Print the number in regular formatting 
 {
-    for(int i = 0; i < x.size; i++){
+    for (int i = 0; i < x.size; i++){
         os << x.arrInt[i];
     }
     os << endl;
     return os;
 }
-istream& operator >> (istream& is, const MyInt& x)      // Ignore leading spaces, until there is a num. 
+istream& operator>>(istream& is  , MyInt& x) 
 {
-    // Skip the leading spaces
-    while (isspace(is.peek())){
-        is.get();
+    delete[] x.arrInt;
+    x.arrInt = new int[0];
+    x.size = 0;
+    // Skip leading white spaces
+    while (isspace(is.peek())) {
+        is.get();  // Read and discard white space characters
     }
 
-    //Check next if it a digit 
-
-    int capacity = 5;
-    char* intArr = new char[capacity];
-    int i = 0;
-
+    // Create a temporary buffer to store the digits as we read them
+    char* c;  // Using string for temporary storage of digits
+    
+    // Read digits one at a time
     char ch;
-
-    while (isdigit(ch) && is.get(ch)){
-        if (i >= capacity){
-            capacity += 5;
-            char* newintArr = new char[capacity];
-            for (int i = 0; i < capacity; i++){
-                newintArr[i] = intArr[i]; 
-            }
-            delete[] intArr;
-            intArr = newintArr;
+    int size = 0;
+    while (is.get(ch) && isdigit(ch)) {
+        if (size >= x.size){
+            x.Resize(1);
         }
-    }
+        x.arrInt[size] = C2I(ch); 
+        size ++;
 
-    // TODO 
+    }
+    cout << size;
 
     return is;
 }
@@ -203,7 +304,7 @@ int MyInt::GetSize()  const
 void MyInt::SetSize(int n)
 {
     if (n < 0) {
-    n = 0;
+        n = 0;
     }
     
     // Use temp to not compare the value 
@@ -216,6 +317,7 @@ void MyInt::SetSize(int n)
         size++;  
         temp /= 10;  // So it does not change the value of n we use the temp
     }
+
     SetArray(n);
 
 }
@@ -241,15 +343,35 @@ void MyInt::SetArray(int n)
     }
 
     // Handle the case for n == 0, where the array needs to hold 0
-    if (size == 1) {
-        arrInt[0] = 0;
-    }
+
+
 }
 
+void MyInt::Resize(int newSize)
+{  
+    // Create temp 
+    int* tempArray = new int[size+newSize];
+
+    // Copy values 
+    for (int i = 0; i < size; i++){
+        tempArray[i] = arrInt[i]; 
+    }
+    // Delete
+    delete[] arrInt;
+
+    // set tthe size to the new one
+    size = size+newSize;
+
+    // Set the pointer of the temporary array to arrInt
+    arrInt = tempArray;
+
+    cout << size;
+}
 
 // Other operator overloads  ++int; int++
 // Pre, returns the value incremented 
-MyInt MyInt::operator++()
+// Check in these two if they are a nine, if they are a nine add a new array, delete the previous one. Else just increment ti 
+MyInt MyInt::operator++() 
 {
 
 }
@@ -261,5 +383,3 @@ MyInt MyInt::operator++(int x)
 
 
 
-// I dont understand, isnt supposed to be that there could be an infinite amount of numbers
-// Where should this happen if in the constructor you can only put 2 billion, where should this be able to happen????
