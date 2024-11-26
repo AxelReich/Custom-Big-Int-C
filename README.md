@@ -25,17 +25,15 @@ To build and run this project, you need the following:
 ```bash
 git clone https://github.com/your-username/MyInt-Project.git
 cd MyInt-Project
+
 2. Compile the Code
 Use a C++ compiler to compile the source files. For example, if you're using g++, run the following command:
-
-bash
-Copy code
 g++ -o myint main.cpp MyInt.cpp
+
 3. Run the Program
 Execute the program:
 
-bash
-Copy code
+
 ./myint
 4. Example Usage
 Once the program runs, it will perform operations on large integers. The code includes example operations that demonstrate adding and subtracting large integers.
@@ -55,8 +53,7 @@ Memory for the arrInt array is allocated dynamically to ensure that large intege
 Code Example
 Here's a simplified example of how the MyInt class is used:
 
-cpp
-Copy code
+
 MyInt x, y;
 x.setValue("12345");
 y.setValue("6789");
@@ -72,17 +69,12 @@ Subtraction with Negative Results: The current implementation doesn't handle neg
 
 Memory Constraints: The size of the integers that can be handled is constrained by the available system memory. Very large integers may lead to memory allocation issues if system memory is exhausted.
 
-Future Improvements
-Negative Result Handling: Implement a mechanism to handle and return negative numbers instead of returning nothing.
+
 Multiplication and Division: Extend the class to support multiplication and division of large integers.
 Efficient Memory Management: Improve the memory management for handling very large numbers more efficiently.
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-go
-Copy code
-
-Simply copy the entire block above, and it should work as a `README.md` file for your GitHub project.
 
 
 
